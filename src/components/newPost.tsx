@@ -1,45 +1,46 @@
-import { IonButton, IonInput, IonItem, IonLabel, IonTextarea } from '@ionic/react';
-import './NewPostForm.css';
-import React, { useState } from 'react';
+import {
+  IonButton,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonTextarea,
+} from "@ionic/react";
+// import './NewPostForm.css';
+import React, { useState } from "react";
 
 interface NewPostFormProps {
+  getCurrentUserName: () => string;
   onSubmit: (title: string, content: string) => void;
 }
 
-const NewPostForm: React.FC<NewPostFormProps> = ({ onSubmit }) => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+const NewPostForm: React.FC<NewPostFormProps> = ({
+  getCurrentUserName,
+  onSubmit,
+}) => {
+  const [content, setContent] = useState("");
+  const [author, setAuthor] = useState("");
 
   const handleSubmit = () => {
-    if (title.trim() && content.trim()) {
-      onSubmit(title, content);
-      setTitle('');
-      setContent('');
+    if (content.trim()) {
+      setAuthor(getCurrentUserName());
+      onSubmit(author, content);
     }
   };
 
   return (
     <div className="new-post-form">
+
       <IonItem>
-        <IonLabel position="floating">Title</IonLabel>
-        <IonInput
-          value={title}
-          onIonChange={(e) => setTitle(e.detail.value!)}
-          type="text"
-          clearInput
-        />
-      </IonItem>
-      <IonItem>
-        <IonLabel position="floating">Content</IonLabel>
+        <IonLabel position="floating">New post</IonLabel>
         <IonTextarea
-          value={content}
+          value={"Write a new post here..."}
           onIonChange={(e) => setContent(e.detail.value!)}
           rows={6}
           clearOnEdit
         />
       </IonItem>
       <IonButton expand="block" onClick={handleSubmit}>
-        Submit
+        Submit Post 
       </IonButton>
     </div>
   );

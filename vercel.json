@@ -1,0 +1,13 @@
+{
+    "version": 2,
+    "routes": [
+      {
+        "src": "/(assets|ionicons|manifest\\.json|robots\\.txt|service-worker\\.js)",
+        "continue": true
+      },
+      {
+        "src": "(.*)",
+        "dest": "index.html"
+      }
+    ]
+  }
