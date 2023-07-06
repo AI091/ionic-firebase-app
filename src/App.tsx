@@ -70,17 +70,19 @@ const App: React.FC = () => {
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-          <Route exact path="/login">
+          {/* <Route exact path="/login">
             {!user?<LoginPage  /> : <Redirect to="/" />}
           </Route>
           <Route exact path="/signup">
           {!user ? <SignUpPage /> : <Redirect to="/" />}
-          </Route>
+          </Route> */}
           <Route exact path="/">
-            {user ? <HomePage /> : <Redirect to="/login" />}
+            {/* {user ? <HomePage /> : <Redirect to="/login" />} */}
+            <HomePage />
           </Route>
           <Route exact path="/home">
-            {user ? <HomePage /> : <Redirect to="/login" />}
+            {/* {user ? <HomePage /> : <Redirect to="/login" />} */}
+            <HomePage />  
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
