@@ -21,6 +21,7 @@ import {
     Timestamp,
     doc,
     deleteDoc,
+    updateDoc,
   } from "firebase/firestore";
   import Post from "../components/post";
   import NewPostForm from "../components/newPost";
@@ -31,6 +32,9 @@ import {
     content: string;
     author_name?: string;
     timestamp: Timestamp;
+    likes: number;
+
+
   }
   
   const HomePage: React.FC = () => {
@@ -49,6 +53,8 @@ import {
             id: doc.id,
             content: doc.data().content,
             timestamp: doc.data().timestamp,
+            author_name: doc.data().author_name,
+            likes: doc.data().likes,
           } as PostInterface;
   
           postsData.push(post);
@@ -79,6 +85,7 @@ import {
         content,
         createdAt: Timestamp.now(),
         likes: 0,
+
       };
       const postsCollection = collection(db, "posts");
       try {
@@ -116,7 +123,17 @@ import {
           console.error('Error deleting post:', error);
         }
       };
-  
+    
+        const handleLikePost = async (postId: string , likes:number) => {
+        try {
+          const postRef = doc(db, 'posts', postId);
+          await updateDoc(postRef,{ likes: likes + 1 });
+          console.log('Post liked:', postId);
+        } catch (error) {
+          console.error('Error liking post:', error);
+        }
+    };
+
     const postItems = postsList.map((post) => (
         
       <IonItem key={post.id}>
@@ -127,6 +144,8 @@ import {
           timestamp={post.timestamp}
           onAddComment={handleAddComment}
           onDeletePost={handleDeletePost}
+          likes={post.likes}
+          onLikePost={handleLikePost}
         />
       </IonItem>
     ));
@@ -149,7 +168,6 @@ import {
             {!postItems && <IonItem> No posts found </IonItem>}
             {postItems}
           </IonList>
-          <IonButton routerLink="/add-post">Add Post</IonButton>
         </IonContent>
       </IonPage>
     );

@@ -31,6 +31,8 @@ interface PostProps {
   timestamp: Timestamp;
   onAddComment: (postId: string, author: string, content: string) => void;
   onDeletePost: (postId: string) => void;
+  likes: number;
+  onLikePost: (postId: string , likes :number) => void;
 }
 
 const user: User | null = getAuth().currentUser;
@@ -39,7 +41,7 @@ if (!user) {
   console.log('User is not logged in');
 }
 
-const Post: React.FC<PostProps> = ({ postId, content, author, timestamp, onAddComment , onDeletePost }) => {
+const Post: React.FC<PostProps> = ({ postId, content, author, timestamp, onAddComment , onDeletePost , likes , onLikePost}) => {
 //   console.log('postId', postId);
     const [commentContent, setCommentContent] = useState('');
   const [comments, setComments] = useState<Comment[]>([]);
@@ -104,7 +106,10 @@ const Post: React.FC<PostProps> = ({ postId, content, author, timestamp, onAddCo
       </IonCardHeader>
       <IonCardContent>
         <p>{content}</p>
-
+        <IonLabel>Likes: {likes}</IonLabel>
+        <IonButton color="primary" onClick={()=>onLikePost(postId , likes)}>
+        Like
+      </IonButton>
         <IonInput
           value={commentContent}
           placeholder="Add a comment"
