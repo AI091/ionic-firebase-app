@@ -11,9 +11,7 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { ellipse, square, triangle } from 'ionicons/icons';
-import Tab1 from './pages/Tab1';
-import Tab2 from './pages/Tab2';
-import Tab3 from './pages/Tab3';
+
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -33,25 +31,56 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import LoginPage from './pages/LoginPage';
+import SignUpPage from './pages/SignUpPage';
+
+import { auth } from '../config/firebase';
+import { useAuth } from 'firebase-react-tools';
+import {app} from '../config/firebase';
+import HomePage from './pages/HomePage';
+import { onAuthStateChanged } from 'firebase/auth';
+import { useEffect, useState } from 'react';
+import { User } from 'firebase/auth';
 
 setupIonicReact();
 
-const App: React.FC = () => (
+
+const App: React.FC = () => {  
+  const [user, setUser] = useState<User|null>(null);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth , (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  
+  
+  
+  
+  return (
+  
   <IonApp>
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-          <Route exact path="/tab1">
-            <Tab1 />
+          <Route exact path="/login">
+            {!user?<LoginPage  /> : <Redirect to="/" />}
           </Route>
-          <Route exact path="/tab2">
-            <Tab2 />
-          </Route>
-          <Route path="/tab3">
-            <Tab3 />
+          <Route exact path="/signup">
+          {!user ? <SignUpPage /> : <Redirect to="/" />}
           </Route>
           <Route exact path="/">
-            <Redirect to="/tab1" />
+            {user ? <HomePage /> : <Redirect to="/login" />}
+          </Route>
+          <Route exact path="/home">
+            {user ? <HomePage /> : <Redirect to="/login" />}
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
@@ -71,6 +100,6 @@ const App: React.FC = () => (
       </IonTabs>
     </IonReactRouter>
   </IonApp>
-);
+);}
 
 export default App;
