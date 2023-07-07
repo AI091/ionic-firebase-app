@@ -54,7 +54,7 @@ const Post: React.FC<PostProps> = ({ postId, content, author, timestamp, onAddCo
     const commentsData: Comment[] = [];
 
       querySnapshot.docs.forEach((doc) => {
-        console.log('doc', doc.data());
+        // console.log('doc', doc.data());
         const comment = {
           id: doc.id,
           content: doc.data().content,
@@ -63,7 +63,7 @@ const Post: React.FC<PostProps> = ({ postId, content, author, timestamp, onAddCo
         } as Comment;
 
         commentsData.push(comment);
-        console.log('comment', comment);
+        // console.log('comment', comment);
       });
 
       setComments(commentsData);

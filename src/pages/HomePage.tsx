@@ -10,7 +10,7 @@ import {
     IonButton,
   } from "@ionic/react";
   import React, { useState, useEffect } from "react";
-  import { db } from "../../config/firebase";
+  import { db , requestForToken } from "../../config/firebase";
   import {
     collection,
     getDocs,
@@ -25,8 +25,9 @@ import {
   } from "firebase/firestore";
   import Post from "../components/post";
   import NewPostForm from "../components/newPost";
-  import { getAuth, onAuthStateChanged } from "firebase/auth";
-  
+  import { getAuth, onAuthStateChanged  } from "firebase/auth";
+  import NotificationsComponent from "../components/notifications";
+
   interface PostInterface {
     id: string;
     content: string;
@@ -123,16 +124,31 @@ import {
           console.error('Error deleting post:', error);
         }
       };
-    
+
+      
+
+        // const [newLikeNotifications, setNewLikeNotifications] = useState<Array<{ postId: string; likeCount: number }>>([]);        
         const handleLikePost = async (postId: string , likes:number) => {
         try {
           const postRef = doc(db, 'posts', postId);
-          await updateDoc(postRef,{ likes: likes + 1 });
+          await updateDoc(postRef, {
+            likes: likes + 1,
+            });
+        
+          const notification = {
+            postId: postId,
+            content: `$post ${postId} reached ${(likes+1)} likes`,
+            seen : false,
+          };
+          await addDoc(collection(db, 'notifications'), notification);
           console.log('Post liked:', postId);
         } catch (error) {
           console.error('Error liking post:', error);
         }
+        
     };
+
+
 
     const postItems = postsList.map((post) => (
         
@@ -149,7 +165,9 @@ import {
         />
       </IonItem>
     ));
-  
+    
+    requestForToken();
+    
     return (
       <IonPage>
         <IonHeader>
@@ -163,6 +181,7 @@ import {
               <IonTitle size="large">Home Page</IonTitle>
             </IonToolbar>
           </IonHeader>
+          <NotificationsComponent />
           <NewPostForm onSubmit={handleCreatePost} getCurrentUserName={getCurrentUserName} />
           <IonList>
             {!postItems && <IonItem> No posts found </IonItem>}
